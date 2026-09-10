@@ -41,10 +41,13 @@ jobs:
           # Клонирование forkop
           git clone https://github.com/itdoginfo/luci-app-forkop.git package/luci-app-forkop
           
-          # Интеграция автономного пакета zapret (от bol-van)
+          # Интеграция пакета zapret (от bol-van)
           git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/zapret
           cp -r /tmp/zapret/init.d/openwrt/zapret package/zapret
           rm -rf /tmp/zapret
+
+          # Клонирование интерфейса luci-app-zapret
+          git clone https://github.com/brvda/luci-app-zapret.git package/luci-app-zapret
           
           ./scripts/feeds update -a
           ./scripts/feeds install -a
@@ -157,6 +160,8 @@ jobs:
             echo "CONFIG_PACKAGE_luci-app-forkop=y"
             echo "CONFIG_PACKAGE_luci-i18n-forkop-ru=y"
             echo "CONFIG_PACKAGE_zapret=y"
+            echo "CONFIG_PACKAGE_luci-app-zapret=y"
+            echo "CONFIG_PACKAGE_luci-i18n-zapret-ru=y"
             
             # Bluetooth components
             echo "CONFIG_PACKAGE_bluez-daemon=y"
