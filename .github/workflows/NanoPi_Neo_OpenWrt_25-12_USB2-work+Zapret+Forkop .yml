@@ -28,20 +28,22 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y \
-            build-essential clang flex bison gawk gcc-multilib \
+            build-essential clang flex bison gawk gcc-multilib g++-multilib \
             gettext git libncurses5-dev libssl-dev python3 \
-            rsync unzip zlib1g-dev file wget python3-distutils
+            rsync unzip zlib1g-dev file wget python3-setuptools libelf-dev zstd
 
-      - name: Clone OpenWrt, Forkop & Zapret
+      - name: Clone OpenWrt, Zapret & Forkop
+        env:
+          GIT_TERMINAL_PROMPT: 0
         run: |
           git clone https://github.com/openwrt/openwrt.git openwrt
           cd openwrt
           
-          # Переключение на версию OpenWrt 25.12.5
-          git checkout v25.12.5
+          # Переключение на целевую версию OpenWrt
+          git checkout v25.12.3
           
-          # Клонирование forkop
-          git clone https://github.com/itdoginfo/luci-app-forkop.git package/luci-app-forkop
+          # Клонирование forkop по актуальному адресу
+          git clone https://github.com/ushan0v/forkop.git package/forkop
           
           # Интеграция пакета zapret (от bol-van)
           git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/zapret
@@ -154,13 +156,20 @@ jobs:
             echo "CONFIG_PACKAGE_kmod-l2tp-ip=y"
             echo "CONFIG_PACKAGE_luci-proto-ppp=y"
             
-            # Специфические модули ядра и пакеты для работы forkop, zapret и TPROXY
+            # Специфические модули ядра и пакеты для работы forkop/podkop, zapret и TPROXY
             echo "CONFIG_PACKAGE_kmod-netlink-diag=y"
             echo "CONFIG_PACKAGE_kmod-nft-tproxy=y"
             echo "CONFIG_PACKAGE_kmod-nft-nat=y"
             echo "CONFIG_PACKAGE_kmod-ip6tables=y"
+            
+            # Добавляем оба варианта названий пакетов на случай старых Makefile в репозитории
+            echo "CONFIG_PACKAGE_forkop=y"
             echo "CONFIG_PACKAGE_luci-app-forkop=y"
             echo "CONFIG_PACKAGE_luci-i18n-forkop-ru=y"
+            echo "CONFIG_PACKAGE_podkop=y"
+            echo "CONFIG_PACKAGE_luci-app-podkop=y"
+            echo "CONFIG_PACKAGE_luci-i18n-podkop-ru=y"
+            
             echo "CONFIG_PACKAGE_zapret=y"
             echo "CONFIG_PACKAGE_luci-app-zapret=y"
             echo "CONFIG_PACKAGE_luci-i18n-zapret-ru=y"
@@ -236,7 +245,7 @@ jobs:
             echo "CONFIG_PACKAGE_luci-app-samba4=y"
             echo "CONFIG_PACKAGE_luci-i18n-samba4-ru=y"
             
-            # Network proxies and VPN tools (Squid, TUN, inet-diag included)
+            # Network proxies and VPN tools
             echo "CONFIG_PACKAGE_wireguard-tools=y"
             echo "CONFIG_PACKAGE_lua=y"
             echo "CONFIG_PACKAGE_squid=y"
