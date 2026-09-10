@@ -31,15 +31,23 @@ jobs:
         run: |
           git clone https://github.com/openwrt/openwrt.git openwrt
           cd openwrt
+          
+          # Примечание: убедитесь, что тег v25.12.3 действительно существует, 
+          # иначе git checkout выдаст ошибку на следующем шаге.
           git checkout v25.12.3
           
-          # Клонируем по правильной ссылке
           git clone https://github.com/ushan0v/forkop.git package/forkop
           
           git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/zapret
           cp -r /tmp/zapret/init.d/openwrt/zapret package/zapret
           rm -rf /tmp/zapret
 
+          # ИСПРАВЛЕНИЕ: 
+          # Если репозиторий brvda/luci-app-zapret удален/недоступен, замените URL ниже на рабочий публичный форк.
+          # Если он приватный, раскомментируйте строку ниже и добавьте ваш токен PAT_TOKEN в GitHub Secrets.
+          # git clone https://${{ secrets.PAT_TOKEN }}@github.com/brvda/luci-app-zapret.git package/luci-app-zapret
+          
+          # Замените ссылку ниже на корректную, если 'brvda' - это опечатка:
           git clone https://github.com/brvda/luci-app-zapret.git package/luci-app-zapret
           
           ./scripts/feeds update -a
