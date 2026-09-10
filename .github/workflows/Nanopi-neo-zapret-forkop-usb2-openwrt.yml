@@ -25,30 +25,16 @@ jobs:
             gettext git libncurses5-dev libssl-dev python3 \
             rsync unzip zlib1g-dev file wget python3-setuptools libelf-dev zstd
 
-      - name: Clone OpenWrt, Zapret & Forkop
+      - name: Clone OpenWrt & Forkop
         env:
           GIT_TERMINAL_PROMPT: 0
         run: |
           git clone https://github.com/openwrt/openwrt.git openwrt
           cd openwrt
-          
-          # Примечание: убедитесь, что тег v25.12.3 действительно существует, 
-          # иначе git checkout выдаст ошибку на следующем шаге.
           git checkout v25.12.3
           
+          # Клонируем только forkop
           git clone https://github.com/ushan0v/forkop.git package/forkop
-          
-          git clone --depth=1 https://github.com/bol-van/zapret.git /tmp/zapret
-          cp -r /tmp/zapret/init.d/openwrt/zapret package/zapret
-          rm -rf /tmp/zapret
-
-          # ИСПРАВЛЕНИЕ: 
-          # Если репозиторий brvda/luci-app-zapret удален/недоступен, замените URL ниже на рабочий публичный форк.
-          # Если он приватный, раскомментируйте строку ниже и добавьте ваш токен PAT_TOKEN в GitHub Secrets.
-          # git clone https://${{ secrets.PAT_TOKEN }}@github.com/brvda/luci-app-zapret.git package/luci-app-zapret
-          
-          # Замените ссылку ниже на корректную, если 'brvda' - это опечатка:
-          git clone https://github.com/brvda/luci-app-zapret.git package/luci-app-zapret
           
           ./scripts/feeds update -a
           ./scripts/feeds install -a
@@ -137,9 +123,6 @@ jobs:
             echo "CONFIG_PACKAGE_forkop=y"
             echo "CONFIG_PACKAGE_luci-app-forkop=y"
             echo "CONFIG_PACKAGE_luci-i18n-forkop-ru=y"
-            echo "CONFIG_PACKAGE_zapret=y"
-            echo "CONFIG_PACKAGE_luci-app-zapret=y"
-            echo "CONFIG_PACKAGE_luci-i18n-zapret-ru=y"
             
             echo "CONFIG_PACKAGE_bluez-daemon=y"
             echo "CONFIG_PACKAGE_bluez-libs=y"
