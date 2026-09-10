@@ -36,7 +36,9 @@ jobs:
         run: |
           git clone https://github.com/openwrt/openwrt.git openwrt
           cd openwrt
-          git checkout v25.12.3
+          
+          # Переключение на версию OpenWrt 25.12.5
+          git checkout v25.12.5
           
           # Клонирование forkop
           git clone https://github.com/itdoginfo/luci-app-forkop.git package/luci-app-forkop
